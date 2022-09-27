@@ -1,0 +1,17 @@
+FROM python:3.9.9-slim as dependencies
+
+LABEL scenario=python-pipelining
+
+WORKDIR /app
+
+COPY requirements/base.txt /app/requirements.txt
+
+RUN apt-get update \
+ && apt-get install gcc -y --no-install-recommends \
+ && apt-get clean
+
+RUN pip install -r requirements.txt
+COPY . .
+
+EXPOSE 8080
+ENTRYPOINT uvicorn app.main:app --reload --host 0.0.0.0 --port 8080
